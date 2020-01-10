@@ -1,11 +1,17 @@
 package com.example.cryptov2;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import java.io.IOException;
+import java.util.ArrayList;
 
 public class DetailsView extends AppCompatActivity {
 
@@ -15,9 +21,10 @@ public class DetailsView extends AppCompatActivity {
     TextView change_1h;
     TextView change_24h;
     TextView change_7d;
+    String Nazwa;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details_view);
 
@@ -30,7 +37,7 @@ public class DetailsView extends AppCompatActivity {
 
         Bundle extras = getIntent().getExtras();
         if(extras !=null) {
-            String Nazwa = extras.getString("Nazwa");
+            Nazwa = extras.getString("Nazwa");
             String Cena = extras.getString("Cena");
             currencyName.setText(Nazwa);
             value.setText(Cena);
@@ -40,7 +47,28 @@ public class DetailsView extends AppCompatActivity {
 
 
     public void addToFav(View view) {
-        //Todo: dodawanie wybranej waluty do ulubionych
+        SharedPreferences sharedPreferences = this.getSharedPreferences("com.example.cryptov2", Context.MODE_PRIVATE);
+
+        ArrayList<String>favorite = new ArrayList<>();
+        favorite.add(Nazwa);
+
+        try {
+            sharedPreferences.edit().putString("favorites", ObjectSerializer.serialize(favorite)).apply();
+            Log.i("favoriteLog", ObjectSerializer.serialize(favorite));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        readFavorite();
+    }
+    public void readFavorite(){
+        SharedPreferences sharedPreferences = this.getSharedPreferences("com.example.cryptov2", Context.MODE_PRIVATE);
+        ArrayList<String> savedFavorites = new ArrayList<>();
+        try {
+            savedFavorites = (ArrayList<String>) ObjectSerializer.deserialize(sharedPreferences.getString("favorites", ObjectSerializer.serialize(new ArrayList<String>())));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Log.i("savedFavorites ", savedFavorites.toString());
 
     }
 }

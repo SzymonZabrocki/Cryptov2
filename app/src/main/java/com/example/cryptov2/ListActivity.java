@@ -1,6 +1,8 @@
 package com.example.cryptov2;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -36,6 +38,7 @@ public class ListActivity extends AppCompatActivity {
     JSONArray mJsonArray;
     String intentName;
     String intentPrice_usd;
+    SharedPreferences sharedPreferences;
 
     public class DownloadTask extends AsyncTask<String, Void, String> {
 
@@ -122,6 +125,18 @@ public class ListActivity extends AppCompatActivity {
         });
     }
 
+    public void readFavorite(){
+        sharedPreferences = this.getSharedPreferences("com.example.cryptov2", Context.MODE_PRIVATE);
+        ArrayList<String> savedFavorites = new ArrayList<>();
+        try {
+            savedFavorites = (ArrayList<String>) ObjectSerializer.deserialize(sharedPreferences.getString("favorites", ObjectSerializer.serialize(new ArrayList<String>())));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Log.i("savedFavorites ", savedFavorites.toString());
+
+    }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -134,6 +149,7 @@ public class ListActivity extends AppCompatActivity {
         task.execute("https://api.coinmarketcap.com/v1/ticker/");
         intent = new Intent(this, DetailsView.class);
         createList();
+        readFavorite();
     }
 
     public void sendIntent(String intentname, String intentprice_usd){
@@ -144,5 +160,6 @@ public class ListActivity extends AppCompatActivity {
     public void showDetails() {
 
         startActivity(intent);
+
     }
 }
