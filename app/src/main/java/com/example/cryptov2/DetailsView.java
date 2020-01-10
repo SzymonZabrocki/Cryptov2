@@ -32,8 +32,15 @@ public class DetailsView extends AppCompatActivity {
         if(extras !=null) {
             String Nazwa = extras.getString("Nazwa");
             String Cena = extras.getString("Cena");
+            String OneH = extras.getString("1h");
+            String TwentyFourH = extras.getString("24h");
+            String SevenD = extras.getString("7d");
+
             currencyName.setText(Nazwa);
             value.setText(Cena);
+            change_1h.setText(OneH);
+            change_24h.setText(TwentyFourH);
+            change_7d.setText(SevenD);
         }
 
     }

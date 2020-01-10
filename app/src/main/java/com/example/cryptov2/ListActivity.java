@@ -36,6 +36,9 @@ public class ListActivity extends AppCompatActivity {
     JSONArray mJsonArray;
     String intentName;
     String intentPrice_usd;
+    String intentOne_Hour;
+    String intentTwentyFour_Hour;
+    String intentSeven_Days;
 
     public class DownloadTask extends AsyncTask<String, Void, String> {
 
@@ -112,7 +115,10 @@ public class ListActivity extends AppCompatActivity {
                     Log.i("wybranaPozycjaNaLiscie", String.valueOf(mJsonArray.getJSONObject(position)));
                     intentName = intentJsonArray.getString("name");
                     intentPrice_usd = intentJsonArray.getString("price_usd");
-                    sendIntent(intentName,intentPrice_usd);
+                    intentOne_Hour = intentJsonArray.getString("percent_change_1h");
+                    intentTwentyFour_Hour = intentJsonArray.getString("percent_change_24h");
+                    intentSeven_Days = intentJsonArray.getString("percent_change_7d");
+                    sendIntent(intentName, intentPrice_usd, intentOne_Hour, intentTwentyFour_Hour, intentSeven_Days);
                     showDetails();
 
                 } catch (JSONException e) {
@@ -136,9 +142,12 @@ public class ListActivity extends AppCompatActivity {
         createList();
     }
 
-    public void sendIntent(String intentname, String intentprice_usd){
-        intent.putExtra("Nazwa",intentname);
-        intent.putExtra("Cena",intentprice_usd);
+    public void sendIntent(String intentName, String intentPrice_usd, String intentOne_Hour, String intentTwentyFour_Hour, String intentSeven_Days){
+        intent.putExtra("Nazwa",intentName);
+        intent.putExtra("Cena",intentPrice_usd);
+        intent.putExtra("1h",intentOne_Hour);
+        intent.putExtra("24h",intentTwentyFour_Hour);
+        intent.putExtra("7d",intentSeven_Days);
     }
 
     public void showDetails() {
