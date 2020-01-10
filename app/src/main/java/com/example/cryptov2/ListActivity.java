@@ -131,7 +131,7 @@ public class ListActivity extends AppCompatActivity {
     }
 
     public void readFavorite(){
-        sharedPreferences = this.getSharedPreferences("com.example.cryptov2", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = this.getSharedPreferences("com.example.cryptov2", Context.MODE_PRIVATE);
         ArrayList<String> savedFavorites = new ArrayList<>();
         try {
             savedFavorites = (ArrayList<String>) ObjectSerializer.deserialize(sharedPreferences.getString("favorites", ObjectSerializer.serialize(new ArrayList<String>())));
