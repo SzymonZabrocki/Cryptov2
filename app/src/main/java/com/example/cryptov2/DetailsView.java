@@ -7,6 +7,9 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 public class DetailsView extends AppCompatActivity {
 
     Button addToFavorite;
@@ -32,15 +35,17 @@ public class DetailsView extends AppCompatActivity {
         if(extras !=null) {
             String Nazwa = extras.getString("Nazwa");
             String Cena = extras.getString("Cena");
+            float cenaF = Float.valueOf(Cena);
+            String prettyCena = String.format("%.2f", cenaF);
             String OneH = extras.getString("1h");
             String TwentyFourH = extras.getString("24h");
             String SevenD = extras.getString("7d");
 
             currencyName.setText(Nazwa);
-            value.setText(Cena);
-            change_1h.setText(OneH);
-            change_24h.setText(TwentyFourH);
-            change_7d.setText(SevenD);
+            value.setText(prettyCena + " $");
+            change_1h.setText(OneH + "%");
+            change_24h.setText(TwentyFourH+ "%");
+            change_7d.setText(SevenD+"%");
         }
 
     }

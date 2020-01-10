@@ -85,7 +85,7 @@ public class ListActivity extends AppCompatActivity {
 
                     //Dodawanie kolejnej pozycji na liście
                     myCryptoList.setAdapter(arrayAdapter);
-                    currencyList.add(name + "   " + price_usd);
+                    currencyList.add(name);
 
 
                     Log.i("namexD", name);
