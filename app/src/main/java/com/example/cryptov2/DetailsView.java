@@ -27,6 +27,15 @@ public class DetailsView extends AppCompatActivity {
         change_1h = findViewById(R.id.change_1h);
         change_24h = findViewById(R.id.change_24h);
         change_7d = findViewById(R.id.change_7d);
+
+        Bundle extras = getIntent().getExtras();
+        if(extras !=null) {
+            String Nazwa = extras.getString("Nazwa");
+            String Cena = extras.getString("Cena");
+            currencyName.setText(Nazwa);
+            value.setText(Cena);
+        }
+
     }
 
 

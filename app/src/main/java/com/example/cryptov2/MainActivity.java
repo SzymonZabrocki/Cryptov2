@@ -13,9 +13,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        DownloadTask task = new DownloadTask();
-        task.execute("https://api.coinmarketcap.com/v1/ticker/");
     }
 
     public void showAll(View view) {
