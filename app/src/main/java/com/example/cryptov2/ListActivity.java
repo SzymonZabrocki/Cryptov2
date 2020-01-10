@@ -31,6 +31,11 @@ public class ListActivity extends AppCompatActivity {
     ArrayAdapter<String> arrayAdapter;
     ArrayList<String> currencyList;
     Intent intent;
+    JSONObject mJsonObject;
+    JSONObject intentJsonArray;
+    JSONArray mJsonArray;
+    String intentName;
+    String intentPrice_usd;
 
     public class DownloadTask extends AsyncTask<String, Void, String> {
 
@@ -67,9 +72,9 @@ public class ListActivity extends AppCompatActivity {
             super.onPostExecute(s);
             //Log.i("JSON",s);
             try {
-                JSONArray mJsonArray = new JSONArray(s);
+                mJsonArray = new JSONArray(s);
                 for (int i = 0; i < mJsonArray.length(); i++) {
-                    JSONObject mJsonObject = mJsonArray.getJSONObject(i);
+                    mJsonObject = mJsonArray.getJSONObject(i);
 
                     //Przypisanie elementu json do zmiennej
                     name = mJsonObject.getString("name");
@@ -101,7 +106,18 @@ public class ListActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String selectedItem = (String) parent.getItemAtPosition(position);
-                showDetails();
+                try {
+
+                    intentJsonArray = mJsonArray.getJSONObject(position);
+                    Log.i("wybranaPozycjaNaLiscie", String.valueOf(mJsonArray.getJSONObject(position)));
+                    intentName = intentJsonArray.getString("name");
+                    intentPrice_usd = intentJsonArray.getString("price_usd");
+                    sendIntent(intentName,intentPrice_usd);
+                    showDetails();
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
@@ -116,17 +132,16 @@ public class ListActivity extends AppCompatActivity {
 
         DownloadTask task = new DownloadTask();
         task.execute("https://api.coinmarketcap.com/v1/ticker/");
-
+        intent = new Intent(this, DetailsView.class);
         createList();
     }
 
-    public void sendIntent(){
-        intent.putExtra("Nazwa",name);
-        intent.putExtra("Cena",price_usd);
+    public void sendIntent(String intentname, String intentprice_usd){
+        intent.putExtra("Nazwa",intentname);
+        intent.putExtra("Cena",intentprice_usd);
     }
 
     public void showDetails() {
-        intent = new Intent(this, DetailsView.class);
 
         startActivity(intent);
     }
