@@ -19,8 +19,4 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, ListActivity.class);
         startActivity(intent);
     }
-
-    public void showFav(View view) {
-        //Todo: wyświetlanie listy z wybranymi walutami
-    }
 }

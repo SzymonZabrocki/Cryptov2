@@ -1,14 +1,13 @@
 package com.example.cryptov2;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -32,7 +31,6 @@ public class ListActivity extends AppCompatActivity {
     ListView myCryptoList;
     ArrayAdapter<String> arrayAdapter;
     ArrayList<String> currencyList;
-    Intent intent;
     JSONObject mJsonObject;
     JSONObject intentJsonArray;
     JSONArray mJsonArray;
@@ -41,6 +39,8 @@ public class ListActivity extends AppCompatActivity {
     String intentOne_Hour;
     String intentTwentyFour_Hour;
     String intentSeven_Days;
+    Intent intent;
+    ImageView loading;
 
     public class DownloadTask extends AsyncTask<String, Void, String> {
 
@@ -76,6 +76,7 @@ public class ListActivity extends AppCompatActivity {
         public void onPostExecute(String s) {
             super.onPostExecute(s);
             //Log.i("JSON",s);
+            loading.setVisibility(View.INVISIBLE);
             try {
                 mJsonArray = new JSONArray(s);
                 for (int i = 0; i < mJsonArray.length(); i++) {
@@ -103,6 +104,21 @@ public class ListActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        setContentView(R.layout.activity_list);
+        myCryptoList = findViewById(R.id.cryptoList);
+        loading = findViewById(R.id.loadingImg);
+        loading.animate().rotation(100000).setDuration(100000);
+
+        DownloadTask task = new DownloadTask();
+        task.execute("https://api.coinmarketcap.com/v1/ticker/");
+        intent = new Intent(this, DetailsView.class);
+        createList();
+    }
+
     public void createList() {
         currencyList = new ArrayList<>();
         arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, currencyList);
@@ -126,48 +142,21 @@ public class ListActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+
             }
         });
-    }
-
-    public void readFavorite(){
-        SharedPreferences sharedPreferences = this.getSharedPreferences("com.example.cryptov2", Context.MODE_PRIVATE);
-        ArrayList<String> savedFavorites = new ArrayList<>();
-        try {
-            savedFavorites = (ArrayList<String>) ObjectSerializer.deserialize(sharedPreferences.getString("favorites", ObjectSerializer.serialize(new ArrayList<String>())));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Log.i("savedFavorites ", savedFavorites.toString());
 
     }
 
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        setContentView(R.layout.activity_list);
-        myCryptoList = findViewById(R.id.cryptoList);
-
-        DownloadTask task = new DownloadTask();
-        task.execute("https://api.coinmarketcap.com/v1/ticker/");
-        intent = new Intent(this, DetailsView.class);
-        createList();
-        readFavorite();
-    }
-
-    public void sendIntent(String intentName, String intentPrice_usd, String intentOne_Hour, String intentTwentyFour_Hour, String intentSeven_Days){
-        intent.putExtra("Nazwa",intentName);
-        intent.putExtra("Cena",intentPrice_usd);
-        intent.putExtra("1h",intentOne_Hour);
-        intent.putExtra("24h",intentTwentyFour_Hour);
-        intent.putExtra("7d",intentSeven_Days);
+    public void sendIntent(String intentName, String intentPrice_usd, String intentOne_Hour, String intentTwentyFour_Hour, String intentSeven_Days) {
+        intent.putExtra("Nazwa", intentName);
+        intent.putExtra("Cena", intentPrice_usd);
+        intent.putExtra("1h", intentOne_Hour);
+        intent.putExtra("24h", intentTwentyFour_Hour);
+        intent.putExtra("7d", intentSeven_Days);
     }
 
     public void showDetails() {
-
         startActivity(intent);
-
     }
 }
